@@ -1,10 +1,11 @@
-import type { ReactNode } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import MainLayout from "./layouts/MainLayout";
 import CustomerListPage from "./pages/CustomerListPage";
-import CustomerDetailPage from "./pages/CustomerDetailPage";
+import CustomerCreatePage from "./pages/CustomerCreatePage";
 import LoginPage from "./pages/LoginPage";
 import { useAuthStore } from "./store/useAuthStore";
-import CustomerCreatePage from "./pages/CustomerCreatePage";
+import type { ReactNode } from "react";
+import { Navigate } from "react-router-dom";
 
 function PrivateRoute({ children }: { children: ReactNode }) {
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
@@ -20,25 +21,13 @@ export default function App() {
         path="/"
         element={
           <PrivateRoute>
-            <CustomerListPage />
+            <MainLayout />
           </PrivateRoute>
         }
-      />
-
-      <Route
-        path="/customers/:id"
-        element={
-          <PrivateRoute>
-            <CustomerDetailPage />
-          </PrivateRoute>
-        }
-      />
-
-      <Route path="/customers/new" element={ <PrivateRoute>
-      <CustomerCreatePage />
-    </PrivateRoute>
-  }
-  />
+      >
+        <Route index element={<CustomerListPage />} />
+        <Route path="customers/new" element={<CustomerCreatePage />} />
+      </Route>
     </Routes>
   );
 }
