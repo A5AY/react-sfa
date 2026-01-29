@@ -10,16 +10,14 @@ import {
   Stack,
 } from "@mui/material";
 import { useState } from "react";
-import { useCustomerStore } from "../store/useCustomerStore";
 import type { Customer } from "../store/useCustomerStore";
 import EditCustomerDialog from "./EditCustomerDialog";
 import DeleteCustomerDialog from "./DeleteCustomerDialog";
 import { Link } from "react-router-dom";
 
+type Props = { customers: Customer[] };
 
-export default function CustomerTable() {
-  const customers = useCustomerStore((state) => state.customers);
-
+export default function CustomerTable({ customers }: Props) {
   const [selected, setSelected] = useState<Customer | null>(null);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
@@ -55,7 +53,7 @@ export default function CustomerTable() {
                 <TableCell>{c.company}</TableCell>
                 <TableCell>
                   <Stack direction="row" spacing={1}>
-                    <Button variant="outlined" component={Link} to={`/customers/${c.id}`} >
+                    <Button variant="outlined" component={Link} to={`/customers/${c.id}`}>
                       詳細
                     </Button>
                     <Button variant="outlined" onClick={() => handleEdit(c)}>
@@ -70,21 +68,18 @@ export default function CustomerTable() {
                     </Button>
                   </Stack>
                 </TableCell>
-                
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
 
-      {/* 編集ダイアログ */}
       <EditCustomerDialog
         open={openEdit}
         onClose={() => setOpenEdit(false)}
         customer={selected}
       />
 
-      {/* 削除ダイアログ */}
       <DeleteCustomerDialog
         open={openDelete}
         onClose={() => setOpenDelete(false)}

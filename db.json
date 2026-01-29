@@ -1,14 +1,9 @@
 {
   "customers": [
     {
-      "id": "3bbe",
-      "name": "AWS",
-      "company": "あ"
-    },
-    {
-      "id": "cab5",
-      "name": "あ",
-      "company": "あ"
+      "id": "24d8",
+      "name": "テストマン",
+      "company": "テスト株式会社"
     }
   ]
 }
