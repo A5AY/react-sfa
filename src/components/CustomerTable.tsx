@@ -8,12 +8,14 @@ import {
     Paper,
     Button,
     Stack,
+    Checkbox,
 } from "@mui/material";
 import { useState } from "react";
 import type { Customer } from "../store/useCustomerStore";
 import EditCustomerDialog from "./EditCustomerDialog";
 import DeleteCustomerDialog from "./DeleteCustomerDialog";
 import { Link } from "react-router-dom";
+import { useCustomerStore } from "../store/useCustomerStore";
 
 type Props = { customers: Customer[] };
 
@@ -22,22 +24,47 @@ export default function CustomerTable({ customers }: Props) {
     const [openEdit, setOpenEdit] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
 
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const deleteCustomer = useCustomerStore((state) => state.deleteCustomer);
+
+    const handleCheck = (id: string) => {
+        setSelectedIds((prev) =>
+            prev.includes(id)
+                ? prev.filter((x) => x !== id)
+                : [...prev, id]
+        );
+    };
+
+    const handleBulkDelete = async () => {
+        for (const id of selectedIds) {
+            await deleteCustomer(id);
+        }
+        setSelectedIds([]);
+    };
+
     const handleEdit = (customer: Customer) => {
         setSelected(customer);
         setOpenEdit(true);
     };
 
-    const handleDelete = (customer: Customer) => {
-        setSelected(customer);
-        setOpenDelete(true);
-    };
-
     return (
         <>
+            <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+                <Button
+                    variant="contained"
+                    color="error"
+                    disabled={selectedIds.length === 0}
+                    onClick={handleBulkDelete}
+                >
+                    削除
+                </Button>
+            </Stack>
+
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
                         <TableRow>
+                            <TableCell></TableCell>
                             <TableCell>ID</TableCell>
                             <TableCell>名前</TableCell>
                             <TableCell>会社名</TableCell>
@@ -51,12 +78,20 @@ export default function CustomerTable({ customers }: Props) {
                     <TableBody>
                         {customers.map((c) => (
                             <TableRow key={c.id}>
+                                <TableCell>
+                                    <Checkbox
+                                        checked={selectedIds.includes(c.id)}
+                                        onChange={() => handleCheck(c.id)}
+                                    />
+                                </TableCell>
+
                                 <TableCell>{c.id}</TableCell>
                                 <TableCell>{c.name}</TableCell>
                                 <TableCell>{c.company}</TableCell>
                                 <TableCell>{c.address}</TableCell>
                                 <TableCell>{c.email}</TableCell>
                                 <TableCell>{c.phone}</TableCell>
+
                                 <TableCell>
                                     <Stack direction="row" spacing={1}>
                                         <Button variant="outlined" component={Link} to={`/customers/${c.id}`}>
@@ -64,13 +99,6 @@ export default function CustomerTable({ customers }: Props) {
                                         </Button>
                                         <Button variant="outlined" onClick={() => handleEdit(c)}>
                                             編集
-                                        </Button>
-                                        <Button
-                                            variant="outlined"
-                                            color="error"
-                                            onClick={() => handleDelete(c)}
-                                        >
-                                            削除
                                         </Button>
                                     </Stack>
                                 </TableCell>
