@@ -14,7 +14,7 @@ export default function LoginPage() {
   const handleLogin = () => {
     const ok = login(username, password);
     if (ok) {
-      navigate("/"); // ← 顧客一覧へ
+      navigate("/");
     } else {
       setError("ユーザー名またはパスワードが違います");
     }

@@ -10,6 +10,9 @@ export default function CustomerListPage() {
 
     const [nameQuery, setNameQuery] = useState("");
     const [companyQuery, setCompanyQuery] = useState("");
+    const [addressQuery, setAddressQuery] = useState("");
+    const [emailQuery, setEmailQuery] = useState("");
+    const [phoneQuery, setPhoneQuery] = useState("");
 
     useEffect(() => {
         useCustomerStore.getState().fetchCustomers();
@@ -23,16 +26,6 @@ export default function CustomerListPage() {
 
     return (
         <div style={{ padding: 20 }}>
-            <Stack direction="row" justifyContent="flex-end" sx={{ mb: 2 }}>
-                <Button
-                    variant="contained"
-                    onClick={() => navigate("/customers/new")}
-                    sx={{ fontSize: "10px", width: "200px" }}
-                >
-                    顧客登録
-                </Button>
-            </Stack>
-
             <h2>顧客検索</h2>
 
             <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
@@ -49,12 +42,36 @@ export default function CustomerListPage() {
                     onChange={(e) => setCompanyQuery(e.target.value)}
                     sx={{ width: "200px" }}
                 />
+                
+                <TextField
+                    label="住所"
+                    value={addressQuery}
+                    onChange={(e) => setAddressQuery(e.target.value)}
+                    sx={{ width: "200px" }}
+                />
+
+                <TextField
+                    label="メールアドレス"
+                    value={emailQuery}
+                    onChange={(e) => setEmailQuery(e.target.value)}
+                    sx={{ width: "200px" }}
+                />
+
+                <TextField
+                    label="電話番号"
+                    value={phoneQuery}
+                    onChange={(e) => setPhoneQuery(e.target.value)}
+                    sx={{ width: "200px" }}
+                />
 
                 <Button
                     variant="outlined"
                     onClick={() => {
                         setNameQuery("");
                         setCompanyQuery("");
+                        setAddressQuery("");
+                        setEmailQuery("");
+                        setPhoneQuery("");
                     }}
                     sx={{ width: "120px", fontSize: "10px", ml: "auto" }}
                 >
@@ -62,6 +79,15 @@ export default function CustomerListPage() {
                 </Button>
             </Stack>
 
+            <Stack direction="row" justifyContent="flex-end" sx={{ mb: 2 }}>
+                <Button
+                    variant="contained"
+                    onClick={() => navigate("/customers/new")}
+                    sx={{ fontSize: "10px", width: "200px" }}
+                >
+                    顧客登録
+                </Button>
+            </Stack>
 
             <h2>顧客一覧</h2>
             <CustomerTable customers={filtered} />

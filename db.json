@@ -1,14 +1,12 @@
 {
   "customers": [
     {
-      "id": "24d8",
-      "name": "テストマン",
-      "company": "テスト株式会社"
-    },
-    {
-      "id": "cc64",
-      "name": "オクレイマン",
-      "company": "テスト株式会社A"
+      "id": "b416",
+      "name": "EISEI KOBAYASHI",
+      "company": "ああああ",
+      "address": "春日市須玖南3-156",
+      "email": "eseviolin@gmail.com",
+      "phone": "08091403191"
     }
   ]
 }

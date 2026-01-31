@@ -34,7 +34,6 @@ export default function MainLayout() {
 
   return (
     <Box sx={{ display: "flex" }}>
-      {/* 左サイドメニュー */}
       <Drawer
         variant="permanent"
         sx={{
@@ -43,7 +42,7 @@ export default function MainLayout() {
           [`& .MuiDrawer-paper`]: {
             width: drawerWidth,
             boxSizing: "border-box",
-            backgroundColor: "#1e293b", 
+            backgroundColor: "#1e293b",
             color: "white",
           },
         }}
@@ -72,7 +71,6 @@ export default function MainLayout() {
 
         <Divider sx={{ backgroundColor: "rgba(255,255,255,0.3)" }} />
 
-        {/* ログアウトボタン（左メニュー下部） */}
         <Box sx={{ mt: "auto", p: 2 }}>
           <Button
             variant="outlined"
@@ -96,7 +94,6 @@ export default function MainLayout() {
         </Box>
       </Drawer>
 
-      {/* 右側のページ内容 */}
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Outlet />
       </Box>
