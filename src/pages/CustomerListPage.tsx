@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useCustomerStore } from "../store/useCustomerStore";
 import CustomerTable from "../components/CustomerTable";
 
+// 顧客一覧画面
 export default function CustomerListPage() {
     const navigate = useNavigate();
     const customers = useCustomerStore((state) => state.customers);
@@ -21,7 +22,10 @@ export default function CustomerListPage() {
     const filtered = customers.filter((c) => {
         const nameMatch = c.name.toLowerCase().includes(nameQuery.toLowerCase());
         const companyMatch = c.company.toLowerCase().includes(companyQuery.toLowerCase());
-        return nameMatch && companyMatch;
+        const addressMatch = c.address.toLowerCase().includes(addressQuery.toLowerCase());
+        const emailMatch = c.email.toLowerCase().includes(emailQuery.toLowerCase());
+        const phoneMatch = c.phone.toLowerCase().includes(phoneQuery.toLowerCase());
+        return nameMatch && companyMatch && addressMatch && emailMatch && phoneMatch;
     });
 
     return (

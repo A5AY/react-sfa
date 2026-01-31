@@ -4,6 +4,7 @@ import { Paper, Typography, Button, Stack } from "@mui/material";
 import { useState, useEffect } from "react";
 import EditCustomerDialog from "../components/EditCustomerDialog";
 
+// 顧客詳細画面
 export default function CustomerDetailPage() {
     const { id } = useParams();
     const customers = useCustomerStore((state) => state.customers);
@@ -29,6 +30,10 @@ export default function CustomerDetailPage() {
     }
 
     const customer = customers.find((c) => c.id === String(id));
+
+    console.log("🔍 詳細画面 customer:", customer);
+    console.log("🔍 customers:", customers); 
+    console.log("🔍 id:", id);
 
     if (!customer) {
         return (
