@@ -22,10 +22,19 @@ import EditCustomerDialog from "./EditCustomerDialog";
 import DeleteCustomerDialog from "./DeleteCustomerDialog";
 import { Link } from "react-router-dom";
 import { useCustomerStore } from "../store/useCustomerStore";
+import { handleImport } from "../utils/handleImport";
+import { handleExport } from "../utils/handleExport";
+import { handleDownloadTemplate } from "../utils/handleDownloadTemplate";
+import { useNavigate } from "react-router-dom";
 
-type Props = { customers: Customer[] };
+type Props = {
+    customers: Customer[];
+    onSelectChange?: (ids: string[]) => void;
+    onCreate?: () => void;
+};
 
-export default function CustomerTable({ customers }: Props) {
+
+export default function CustomerTable({ customers, onSelectChange }: Props) {
     const [selected, setSelected] = useState<Customer | null>(null);
     const [openEdit, setOpenEdit] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
@@ -34,21 +43,25 @@ export default function CustomerTable({ customers }: Props) {
     const deleteCustomer = useCustomerStore((state) => state.deleteCustomer);
 
     const allChecked = customers.length > 0 && selectedIds.length === customers.length;
+    const navigate = useNavigate();
 
     const handleCheck = (id: string) => {
-        setSelectedIds((prev) =>
-            prev.includes(id)
+        setSelectedIds((prev) => {
+            const newIds = prev.includes(id)
                 ? prev.filter((x) => x !== id)
-                : [...prev, id]
-        );
+                : [...prev, id];
+            onSelectChange?.(newIds);
+            return newIds;
+        });
     };
 
+
     const handleCheckAll = () => {
-        if (allChecked) {
-            setSelectedIds([]);
-        } else {
-            setSelectedIds(customers.map((c) => c.id));
-        }
+        const newIds = allChecked
+            ? [] : customers.map((c) => c.id);
+        setSelectedIds(newIds);
+        onSelectChange?.(newIds)
+            ;
     };
 
     const [openConfirm, setOpenConfirm] = useState(false);
@@ -62,6 +75,7 @@ export default function CustomerTable({ customers }: Props) {
             await deleteCustomer(id);
         }
         setSelectedIds([]);
+        onSelectChange?.([]);
         setOpenConfirm(false);
         setSnackbarOpen(true);
     };
@@ -70,7 +84,13 @@ export default function CustomerTable({ customers }: Props) {
 
     return (
         <>
-            <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+            <Stack
+                direction="row"
+                spacing={2}
+                justifyContent={"flex-start"}
+                sx={{ mb: "2", width: "100%", display: "flex" }}
+            >
+                {/* 削除ボタン */}
                 <Button
                     variant="contained"
                     color="error"
@@ -79,6 +99,42 @@ export default function CustomerTable({ customers }: Props) {
                 >
                     削除
                 </Button>
+
+                {/* 顧客登録 */}
+                <Button
+                    variant="contained"
+                    onClick={() => navigate("/customers/new")}
+                >
+                    顧客登録
+                </Button>
+
+                <Stack direction="row"
+                    spacing={2}
+                    justifyContent={"flex-end"}
+                    sx={{ ml: "2", width: "100%", display: "flex" }}>
+
+                    {/* インポート */}
+                    <Button
+                        variant="outlined"
+                        component="label">
+                        インポート
+                        <input type="file" accept=".csv" hidden onChange={handleImport} />
+                    </Button>
+
+                    {/* エクスポート */}
+                    <Button
+                        variant="outlined"
+                        onClick={() => handleExport(selectedIds, customers)}>
+                        エクスポート
+                    </Button>
+
+                    {/* テンプレートDL */}
+                    <Button
+                        variant="outlined"
+                        onClick={handleDownloadTemplate}>
+                        テンプレートDL
+                    </Button>
+                </Stack>
             </Stack>
 
             <TableContainer component={Paper}>
@@ -98,6 +154,7 @@ export default function CustomerTable({ customers }: Props) {
                             <TableCell>住所</TableCell>
                             <TableCell>メールアドレス</TableCell>
                             <TableCell>電話番号</TableCell>
+                            <TableCell>業種</TableCell>
                             <TableCell>操作</TableCell>
                         </TableRow>
                     </TableHead>
@@ -118,6 +175,7 @@ export default function CustomerTable({ customers }: Props) {
                                 <TableCell>{c.address}</TableCell>
                                 <TableCell>{c.email}</TableCell>
                                 <TableCell>{c.phone}</TableCell>
+                                <TableCell>{c.industry}</TableCell>
 
                                 <TableCell>
                                     <Stack direction="row" spacing={1}>

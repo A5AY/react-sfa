@@ -14,6 +14,7 @@ import {
   History,
   Description,
   Logout,
+  Assessment,
 } from "@mui/icons-material";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
@@ -30,6 +31,7 @@ export default function MainLayout() {
     { label: "顧客リスト（未実装）", icon: <ListAlt />, path: "/list" },
     { label: "活動履歴一覧（未実装）", icon: <History />, path: "/activities" },
     { label: "契約一覧（未実装）", icon: <Description />, path: "/contracts" },
+    { label: "Yahoo天気予報（未実装）", icon: <Assessment />, path: "/weather" },
   ];
 
   return (

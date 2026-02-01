@@ -10,11 +10,11 @@ export default function CustomerForm() {
     const [address, setAddress] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
+    const [industry, setIndustry] = useState("");
 
 
     const handleSubmit = async () => {
-        if (!name || !company) return;
-
+        if (!name || !company || !industry) return;
         // API に POST（id はサーバー側で付与される）
         await addCustomer({
             name,
@@ -22,7 +22,7 @@ export default function CustomerForm() {
             address,
             email,
             phone,
-
+            industry,
         });
 
         // 入力欄をクリア
@@ -31,6 +31,7 @@ export default function CustomerForm() {
         setAddress("");
         setEmail("");
         setPhone("");
+        setIndustry("");
     };
 
     return (

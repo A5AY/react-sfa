@@ -7,6 +7,10 @@ import {
     TextField,
     Button,
     Stack,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
 } from "@mui/material";
 import type { Customer } from "../store/useCustomerStore";
 import { useCustomerStore } from "../store/useCustomerStore";
@@ -25,15 +29,19 @@ export default function EditCustomerDialog({ open, onClose, customer }: Props) {
     const [address, setAddress] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
+    const [industry, setIndustry] = useState("");
 
-    // open が true になった瞬間に初期値をセット
     if (open && customer && name === "" && company === "") {
         setName(customer.name);
         setCompany(customer.company);
         setAddress(customer.address);
         setEmail(customer.email);
         setPhone(customer.phone);
+        setIndustry(customer.industry);
     }
+
+    // 業種リスト
+    const industryList = ["建設業", "IT", "飲食"];
 
     const handleSave = () => {
         if (!customer) return;
@@ -45,6 +53,7 @@ export default function EditCustomerDialog({ open, onClose, customer }: Props) {
             address,
             email,
             phone,
+            industry,
         });
 
         onClose();
@@ -92,6 +101,21 @@ export default function EditCustomerDialog({ open, onClose, customer }: Props) {
                         onChange={(e) => setPhone(e.target.value)}
                         fullWidth
                     />
+
+                    <FormControl fullWidth>
+                        <InputLabel>業種</InputLabel>
+                        <Select
+                            value={industry}
+                            label="業種"
+                            onChange={(e) => setIndustry(e.target.value)}
+                        >
+                            {industryList.map((item) => (
+                                <MenuItem key={item} value={item}>
+                                    {item}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                 </Stack>
             </DialogContent>
 

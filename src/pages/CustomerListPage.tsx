@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
-import { TextField, Button, Stack } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { TextField, Button, Stack, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { useCustomerStore } from "../store/useCustomerStore";
 import CustomerTable from "../components/CustomerTable";
 
 // 顧客一覧画面
 export default function CustomerListPage() {
-    const navigate = useNavigate();
+
     const customers = useCustomerStore((state) => state.customers);
 
     const [nameQuery, setNameQuery] = useState("");
@@ -14,59 +13,47 @@ export default function CustomerListPage() {
     const [addressQuery, setAddressQuery] = useState("");
     const [emailQuery, setEmailQuery] = useState("");
     const [phoneQuery, setPhoneQuery] = useState("");
+    const [industryQuery, setIndustryQuery] = useState("");
 
     useEffect(() => {
         useCustomerStore.getState().fetchCustomers();
     }, []);
 
+    const safe = (v: string | undefined) => (v ?? "").toLowerCase();
+
     const filtered = customers.filter((c) => {
-        const nameMatch = c.name.toLowerCase().includes(nameQuery.toLowerCase());
-        const companyMatch = c.company.toLowerCase().includes(companyQuery.toLowerCase());
-        const addressMatch = c.address.toLowerCase().includes(addressQuery.toLowerCase());
-        const emailMatch = c.email.toLowerCase().includes(emailQuery.toLowerCase());
-        const phoneMatch = c.phone.toLowerCase().includes(phoneQuery.toLowerCase());
-        return nameMatch && companyMatch && addressMatch && emailMatch && phoneMatch;
+        return (
+            safe(c.name).includes(nameQuery.toLowerCase()) &&
+            safe(c.company).includes(companyQuery.toLowerCase()) &&
+            safe(c.address).includes(addressQuery.toLowerCase()) &&
+            safe(c.email).includes(emailQuery.toLowerCase()) &&
+            safe(c.phone).includes(phoneQuery.toLowerCase()) &&
+            safe(c.industry).includes(industryQuery.toLowerCase())
+        );
     });
 
+    const industryList = ["建設業", "IT", "飲食"];
+
     return (
-        <div style={{ padding: 20 }}>
+        <div style={{ width: "100%" , display: "flex", flexDirection: "column"}}>
             <h2>顧客検索</h2>
 
             <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
-                <TextField
-                    label="名前"
-                    value={nameQuery}
-                    onChange={(e) => setNameQuery(e.target.value)}
-                    sx={{ width: "200px" }}
-                />
+                <TextField label="名前" value={nameQuery} onChange={(e) => setNameQuery(e.target.value)} sx={{ width: "200px" }} />
+                <TextField label="会社名" value={companyQuery} onChange={(e) => setCompanyQuery(e.target.value)} sx={{ width: "200px" }} />
+                <TextField label="住所" value={addressQuery} onChange={(e) => setAddressQuery(e.target.value)} sx={{ width: "200px" }} />
+                <TextField label="メールアドレス" value={emailQuery} onChange={(e) => setEmailQuery(e.target.value)} sx={{ width: "200px" }} />
+                <TextField label="電話番号" value={phoneQuery} onChange={(e) => setPhoneQuery(e.target.value)} sx={{ width: "200px" }} />
 
-                <TextField
-                    label="会社名"
-                    value={companyQuery}
-                    onChange={(e) => setCompanyQuery(e.target.value)}
-                    sx={{ width: "200px" }}
-                />
-                
-                <TextField
-                    label="住所"
-                    value={addressQuery}
-                    onChange={(e) => setAddressQuery(e.target.value)}
-                    sx={{ width: "200px" }}
-                />
-
-                <TextField
-                    label="メールアドレス"
-                    value={emailQuery}
-                    onChange={(e) => setEmailQuery(e.target.value)}
-                    sx={{ width: "200px" }}
-                />
-
-                <TextField
-                    label="電話番号"
-                    value={phoneQuery}
-                    onChange={(e) => setPhoneQuery(e.target.value)}
-                    sx={{ width: "200px" }}
-                />
+                <FormControl sx={{ width: "200px" }}>
+                    <InputLabel>業種</InputLabel>
+                    <Select value={industryQuery} label="業種" onChange={(e) => setIndustryQuery(e.target.value)}>
+                        <MenuItem value="">（すべて）</MenuItem>
+                        {industryList.map((item) => (
+                            <MenuItem key={item} value={item}>{item}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
 
                 <Button
                     variant="outlined"
@@ -76,6 +63,7 @@ export default function CustomerListPage() {
                         setAddressQuery("");
                         setEmailQuery("");
                         setPhoneQuery("");
+                        setIndustryQuery("");
                     }}
                     sx={{ width: "120px", fontSize: "10px", ml: "auto" }}
                 >
@@ -83,18 +71,12 @@ export default function CustomerListPage() {
                 </Button>
             </Stack>
 
-            <Stack direction="row" justifyContent="flex-end" sx={{ mb: 2 }}>
-                <Button
-                    variant="contained"
-                    onClick={() => navigate("/customers/new")}
-                    sx={{ fontSize: "10px", width: "200px" }}
-                >
-                    顧客登録
-                </Button>
-            </Stack>
-
             <h2>顧客一覧</h2>
-            <CustomerTable customers={filtered} />
+
+            <CustomerTable
+                customers={filtered}
+            />
+
         </div>
     );
 }

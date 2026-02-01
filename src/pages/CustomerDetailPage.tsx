@@ -54,6 +54,7 @@ export default function CustomerDetailPage() {
                 <Typography sx={{ mt: 1 }}>住所: {customer.address}</Typography>
                 <Typography sx={{ mt: 1 }}>メールアドレス: {customer.email}</Typography>
                 <Typography sx={{ mt: 1 }}>電話番号: {customer.phone}</Typography>
+                <Typography sx={{ mt: 1 }}>業種: {customer.industry}</Typography>
 
                 <Stack direction="row" spacing={2} sx={{ mt: 3 }}>
                     <Button variant="contained" onClick={() => setOpenEdit(true)}>

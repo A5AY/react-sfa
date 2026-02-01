@@ -8,6 +8,7 @@ export type Customer = {
     address: string;
     email: string;
     phone: string;
+    industry: string;
 };
 
 type CustomerStore = {

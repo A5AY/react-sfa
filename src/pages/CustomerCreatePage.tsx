@@ -1,5 +1,15 @@
 import { useState } from "react";
-import { TextField, Button, Paper, Stack, Typography } from "@mui/material";
+import { 
+    TextField, 
+    Button, 
+    Paper, 
+    Stack, 
+    Typography,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem 
+} from "@mui/material";
 import { useCustomerStore } from "../store/useCustomerStore";
 import { useNavigate } from "react-router-dom";
 
@@ -12,12 +22,14 @@ export default function CustomerCreatePage() {
     const [address, setAddress] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
+    const [industry, setIndustry] = useState("");
 
+    // 業種リスト
+    const industryList = ["建設業", "IT", "飲食"];
 
     const handleSubmit = async () => {
-        if (!name || !company) return;
-
-        await addCustomer({ name, company, address, email, phone });
+        if (!name || !company || !industry) return;
+        await addCustomer({ name, company, address, email, phone, industry });
         navigate("/"); // 登録後に一覧へ戻る
     };
 
@@ -58,6 +70,18 @@ export default function CustomerCreatePage() {
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                     />
+
+                     <FormControl fullWidth>
+                        <InputLabel>業種</InputLabel>
+                        <Select value={industry} label="業種" onChange={(e) => setIndustry(e.target.value)}
+                        >
+                            {industryList.map((item) => (
+                                <MenuItem key={item} value={item}>
+                                    {item}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
 
                     <Button variant="contained" onClick={handleSubmit}>
                         登録
