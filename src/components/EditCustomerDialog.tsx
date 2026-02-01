@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import type { Customer } from "../store/useCustomerStore";
 import { useCustomerStore } from "../store/useCustomerStore";
+import { industryList } from "../db/itemList";
 
 type Props = {
     open: boolean;
@@ -39,9 +40,6 @@ export default function EditCustomerDialog({ open, onClose, customer }: Props) {
         setPhone(customer.phone);
         setIndustry(customer.industry);
     }
-
-    // 業種リスト
-    const industryList = ["建設業", "IT", "飲食"];
 
     const handleSave = () => {
         if (!customer) return;

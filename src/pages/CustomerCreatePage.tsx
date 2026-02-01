@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { useCustomerStore } from "../store/useCustomerStore";
 import { useNavigate } from "react-router-dom";
+import { industryList } from "../db/itemList";
 
 export default function CustomerCreatePage() {
     const addCustomer = useCustomerStore((state) => state.addCustomer);
@@ -23,9 +24,6 @@ export default function CustomerCreatePage() {
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [industry, setIndustry] = useState("");
-
-    // 業種リスト
-    const industryList = ["建設業", "IT", "飲食"];
 
     const handleSubmit = async () => {
         if (!name || !company || !industry) return;

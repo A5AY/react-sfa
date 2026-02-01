@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { TextField, Button, Stack, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { useCustomerStore } from "../store/useCustomerStore";
 import CustomerTable from "../components/CustomerTable";
+import { industryList } from "../db/itemList";
 
 // 顧客一覧画面
 export default function CustomerListPage() {
@@ -31,8 +32,6 @@ export default function CustomerListPage() {
             safe(c.industry).includes(industryQuery.toLowerCase())
         );
     });
-
-    const industryList = ["建設業", "IT", "飲食"];
 
     return (
         <div style={{ width: "100%" , display: "flex", flexDirection: "column"}}>
