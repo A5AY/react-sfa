@@ -38,6 +38,9 @@ export default function CustomerTable({ customers, onSelectChange }: Props) {
     const [selected, setSelected] = useState<Customer | null>(null);
     const [openEdit, setOpenEdit] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
+    const [openListDialog, setOpenListDialog] = useState(false);
+    const [listErrorOpen, setListErrorOpen] = useState(false);
+
 
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const deleteCustomer = useCustomerStore((state) => state.deleteCustomer);
@@ -108,33 +111,43 @@ export default function CustomerTable({ customers, onSelectChange }: Props) {
                     顧客登録
                 </Button>
 
-                <Stack direction="row"
-                    spacing={2}
-                    justifyContent={"flex-end"}
-                    sx={{ ml: "2", width: "100%", display: "flex" }}>
+                {/* 顧客リスト登録 */}
+                <Button
+                    variant="contained"
+                    onClick={() => {
+                        if (selectedIds.length === 0) {
+                            setListErrorOpen(true);
+                        } else {
+                            setOpenListDialog(true);
+                        }
+                    }
+                    }
+                >
+                    顧客リスト
+                </Button>
 
-                    {/* インポート */}
-                    <Button
-                        variant="outlined"
-                        component="label">
-                        インポート
-                        <input type="file" accept=".csv" hidden onChange={handleImport} />
-                    </Button>
+                {/* インポート */}
+                <Button
+                    variant="contained"
+                    component="label">
+                    インポート
+                    <input type="file" accept=".csv" hidden onChange={handleImport} />
+                </Button>
 
-                    {/* エクスポート */}
-                    <Button
-                        variant="outlined"
-                        onClick={() => handleExport(selectedIds, customers)}>
-                        エクスポート
-                    </Button>
+                {/* エクスポート */}
+                <Button
+                    variant="contained"
+                    onClick={() => handleExport(selectedIds, customers)}>
+                    エクスポート
+                </Button>
 
-                    {/* テンプレートDL */}
-                    <Button
-                        variant="outlined"
-                        onClick={handleDownloadTemplate}>
-                        テンプレートDL
-                    </Button>
-                </Stack>
+                {/* テンプレートDL */}
+                <Button
+                    variant="contained"
+                    onClick={handleDownloadTemplate}>
+                    テンプレートDL
+                </Button>
+
             </Stack>
 
             <TableContainer component={Paper}>
@@ -228,6 +241,26 @@ export default function CustomerTable({ customers, onSelectChange }: Props) {
                     削除しました
                 </Alert>
             </Snackbar>
+
+            <Dialog open={listErrorOpen} onClose={() => setListErrorOpen(false)}>
+                <DialogTitle>エラー</DialogTitle>
+                <DialogContent>顧客を選択してください。</DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setListErrorOpen(false)}>OK</Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={openListDialog} onClose={() => setOpenListDialog(false)} fullWidth maxWidth="sm">
+                <DialogTitle>顧客リストに追加</DialogTitle>
+                <DialogContent>
+                    {/* ここに「新規リストに追加」「既存リストに追加」のUIを後で作る */}
+                    機能はこれから実装します。
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenListDialog(false)}>閉じる</Button>
+                </DialogActions>
+            </Dialog>
+
         </>
     );
 }
