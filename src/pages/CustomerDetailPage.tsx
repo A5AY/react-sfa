@@ -29,7 +29,7 @@ export default function CustomerDetailPage() {
         );
     }
 
-    const customer = customers.find((c) => c.id === String(id));
+    const customer = customers.find((c) => c.id === Number(id));
 
     console.log("🔍 詳細画面 customer:", customer);
     console.log("🔍 customers:", customers); 
