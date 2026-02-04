@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     Dialog,
     DialogTitle,
@@ -14,7 +14,8 @@ import {
 } from "@mui/material";
 import type { Customer } from "../store/useCustomerStore";
 import { useCustomerStore } from "../store/useCustomerStore";
-import { industryList } from "../db/itemList";
+import { industryApi } from "../api/industryApi";
+import type { Industry } from "../api/industryApi";
 
 type Props = {
     open: boolean;
@@ -31,6 +32,15 @@ export default function EditCustomerDialog({ open, onClose, customer }: Props) {
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [industry, setIndustry] = useState("");
+
+    // DB から業種一覧を取得
+    const [industries, setIndustries] = useState<Industry[]>([]);
+
+    useEffect(() => {
+        industryApi.getAll().then((data) => {
+            setIndustries(data);
+        });
+    }, []);
 
     if (open && customer && name === "" && company === "") {
         setName(customer.name);
@@ -107,9 +117,9 @@ export default function EditCustomerDialog({ open, onClose, customer }: Props) {
                             label="業種"
                             onChange={(e) => setIndustry(e.target.value)}
                         >
-                            {industryList.map((item) => (
-                                <MenuItem key={item} value={item}>
-                                    {item}
+                            {industries.map((item) => (
+                                <MenuItem key={item.id} value={item.name}>
+                                    {item.name}
                                 </MenuItem>
                             ))}
                         </Select>

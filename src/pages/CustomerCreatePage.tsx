@@ -1,18 +1,19 @@
-import { useState } from "react";
-import { 
-    TextField, 
-    Button, 
-    Paper, 
-    Stack, 
+import { useState, useEffect } from "react";
+import {
+    TextField,
+    Button,
+    Paper,
+    Stack,
     Typography,
     FormControl,
     InputLabel,
     Select,
-    MenuItem 
+    MenuItem
 } from "@mui/material";
 import { useCustomerStore } from "../store/useCustomerStore";
 import { useNavigate } from "react-router-dom";
-import { industryList } from "../db/itemList";
+import { industryApi } from "../api/industryApi";
+import type { Industry } from "../api/industryApi";
 
 export default function CustomerCreatePage() {
     const addCustomer = useCustomerStore((state) => state.addCustomer);
@@ -25,10 +26,19 @@ export default function CustomerCreatePage() {
     const [phone, setPhone] = useState("");
     const [industry, setIndustry] = useState("");
 
+    // DB から業種一覧を取得
+    const [industries, setIndustries] = useState<Industry[]>([]);
+
+    useEffect(() => {
+        industryApi.getAll().then((data) => {
+            setIndustries(data);
+        });
+    }, []);
+
     const handleSubmit = async () => {
         if (!name || !company || !industry) return;
         await addCustomer({ name, company, address, email, phone, industry });
-        navigate("/"); // 登録後に一覧へ戻る
+        navigate("/");
     };
 
     return (
@@ -69,13 +79,16 @@ export default function CustomerCreatePage() {
                         onChange={(e) => setPhone(e.target.value)}
                     />
 
-                     <FormControl fullWidth>
+                    <FormControl fullWidth>
                         <InputLabel>業種</InputLabel>
-                        <Select value={industry} label="業種" onChange={(e) => setIndustry(e.target.value)}
+                        <Select
+                            value={industry}
+                            label="業種"
+                            onChange={(e) => setIndustry(e.target.value)}
                         >
-                            {industryList.map((item) => (
-                                <MenuItem key={item} value={item}>
-                                    {item}
+                            {industries.map((item) => (
+                                <MenuItem key={item.id} value={item.name}>
+                                    {item.name}
                                 </MenuItem>
                             ))}
                         </Select>

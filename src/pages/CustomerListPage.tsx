@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { TextField, Button, Stack, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { useCustomerStore } from "../store/useCustomerStore";
 import CustomerTable from "../components/CustomerTable";
-import { industryList } from "../db/itemList";
+import { industryApi } from "../api/industryApi";
+import type { Industry } from "../api/industryApi";
 
 // 顧客一覧画面
 export default function CustomerListPage() {
@@ -15,6 +16,16 @@ export default function CustomerListPage() {
     const [emailQuery, setEmailQuery] = useState("");
     const [phoneQuery, setPhoneQuery] = useState("");
     const [industryQuery, setIndustryQuery] = useState("");
+
+    // DB から業種一覧を取得
+    const [industries, setIndustries] = useState<Industry[]>([]);
+
+    useEffect(() => {
+        industryApi.getAll().then((data) => {
+            setIndustries(data);
+        });
+    }, []);
+
 
     useEffect(() => {
         useCustomerStore.getState().fetchCustomers();
@@ -34,7 +45,7 @@ export default function CustomerListPage() {
     });
 
     return (
-        <div style={{ width: "100%" , display: "flex", flexDirection: "column"}}>
+        <div style={{ width: "100%", display: "flex", flexDirection: "column" }}>
             <h2>顧客検索</h2>
 
             <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
@@ -48,8 +59,8 @@ export default function CustomerListPage() {
                     <InputLabel>業種</InputLabel>
                     <Select value={industryQuery} label="業種" onChange={(e) => setIndustryQuery(e.target.value)}>
                         <MenuItem value="">（すべて）</MenuItem>
-                        {industryList.map((item) => (
-                            <MenuItem key={item} value={item}>{item}</MenuItem>
+                        {industries.map((item) => (
+                            <MenuItem key={item.id} value={item.name}>{item.name}</MenuItem>
                         ))}
                     </Select>
                 </FormControl>
