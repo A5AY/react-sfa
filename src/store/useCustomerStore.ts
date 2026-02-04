@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { customerApi } from "../api/customerApi";
 
 export type Customer = {
-    id: string;
+    id: number;
     name: string;
     company: string;
     address: string;
@@ -16,7 +16,7 @@ type CustomerStore = {
     fetchCustomers: () => Promise<void>;
     addCustomer: (c: Omit<Customer, "id">) => Promise<void>;
     updateCustomer: (c: Customer) => Promise<void>;
-    deleteCustomer: (id: string) => Promise<void>;
+    deleteCustomer: (id: number) => Promise<void>;
 };
 
 export const useCustomerStore = create<CustomerStore>((set) => ({
@@ -43,7 +43,7 @@ export const useCustomerStore = create<CustomerStore>((set) => ({
         }));
     },
 
-    deleteCustomer: async (id) => {
+    deleteCustomer: async (id: number) => {
         await customerApi.delete(id);
         set((state) => ({
             customers: state.customers.filter((x) => x.id !== id),
