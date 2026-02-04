@@ -2,7 +2,7 @@ import Encoding from "encoding-japanese";
 import type { Customer } from "../store/useCustomerStore";
 
 // CSVエクスポート関数
-export const handleExport = (selectedIds: string[], customers: Customer[]) => {
+export const handleExport = (selectedIds: number[], customers: Customer[]) => {
     if (selectedIds.length === 0) {
         alert("エクスポートする顧客が選択されていません");
         return;

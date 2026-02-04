@@ -29,7 +29,7 @@ import { useNavigate } from "react-router-dom";
 
 type Props = {
     customers: Customer[];
-    onSelectChange?: (ids: string[]) => void;
+    onSelectChange?: (ids: number[]) => void;
     onCreate?: () => void;
 };
 
@@ -42,13 +42,13 @@ export default function CustomerTable({ customers, onSelectChange }: Props) {
     const [listErrorOpen, setListErrorOpen] = useState(false);
 
 
-    const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const [selectedIds, setSelectedIds] = useState<number[]>([]);
     const deleteCustomer = useCustomerStore((state) => state.deleteCustomer);
 
     const allChecked = customers.length > 0 && selectedIds.length === customers.length;
     const navigate = useNavigate();
 
-    const handleCheck = (id: string) => {
+    const handleCheck = (id: number) => {
         setSelectedIds((prev) => {
             const newIds = prev.includes(id)
                 ? prev.filter((x) => x !== id)
