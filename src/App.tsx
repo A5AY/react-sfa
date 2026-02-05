@@ -4,6 +4,8 @@ import CustomerListPage from "./pages/CustomerListPage";
 import CustomerCreatePage from "./pages/CustomerCreatePage";
 import CustomerDetailPage from "./pages/CustomerDetailPage";
 import LoginPage from "./pages/LoginPage";
+import ListPage from "./pages/ListPage";
+import ListDetailPage from "./pages/ListDetailPage";
 import { useAuthStore } from "./store/useAuthStore";
 import type { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
@@ -29,6 +31,9 @@ export default function App() {
         <Route index element={<CustomerListPage />} />
         <Route path="customers/new" element={<CustomerCreatePage />} />
         <Route path="customers/:id" element={<CustomerDetailPage />} />
+        <Route path="/lists" element={<ListPage />} />
+        <Route path="/lists/:id" element={<ListDetailPage />} />
+
       </Route>
     </Routes>
   );

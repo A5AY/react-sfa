@@ -15,6 +15,12 @@ import {
     DialogActions,
     Snackbar,
     Alert,
+    Typography,
+    TextField,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
 } from "@mui/material";
 import { useState } from "react";
 import type { Customer } from "../store/useCustomerStore";
@@ -26,6 +32,8 @@ import { handleImport } from "../utils/handleImport";
 import { handleExport } from "../utils/handleExport";
 import { handleDownloadTemplate } from "../utils/handleDownloadTemplate";
 import { useNavigate } from "react-router-dom";
+import { customerListApi } from "../api/customerListApi";
+
 
 type Props = {
     customers: Customer[];
@@ -43,6 +51,11 @@ export default function CustomerTable({ customers, onSelectChange }: Props) {
 
 
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
+    const [newListName, setNewListName] = useState("");
+    const [selectedListId, setSelectedListId] = useState<number | "">("");
+    const [lists, setLists] = useState<{ id: number; name: string }[]>([]);
+
     const deleteCustomer = useCustomerStore((state) => state.deleteCustomer);
 
     const allChecked = customers.length > 0 && selectedIds.length === customers.length;
@@ -85,6 +98,29 @@ export default function CustomerTable({ customers, onSelectChange }: Props) {
 
     const [snackbarOpen, setSnackbarOpen] = useState(false);
 
+
+    const handleCreateList = async () => {
+    const newList = await customerListApi.create(newListName);
+    await customerListApi.addCustomers(newList.id, selectedIds);
+
+    setNewListName("");
+    setOpenListDialog(false);
+};
+    
+    // 既存リストに追加
+    const handleAddToExistingList = async () => {
+    await customerListApi.addCustomers(selectedListId as number, selectedIds);
+
+    setSelectedListId("");
+    setOpenListDialog(false);
+};
+
+    // 既存リスト一括取得
+    const fetchLists = async () => {
+        const data = await customerListApi.getAll();
+        setLists(data);
+    };
+
     return (
         <>
             <Stack
@@ -118,10 +154,11 @@ export default function CustomerTable({ customers, onSelectChange }: Props) {
                         if (selectedIds.length === 0) {
                             setListErrorOpen(true);
                         } else {
+                            fetchLists();
                             setOpenListDialog(true);
                         }
-                    }
-                    }
+                    }}
+
                 >
                     顧客リスト
                 </Button>
@@ -252,10 +289,56 @@ export default function CustomerTable({ customers, onSelectChange }: Props) {
 
             <Dialog open={openListDialog} onClose={() => setOpenListDialog(false)} fullWidth maxWidth="sm">
                 <DialogTitle>顧客リストに追加</DialogTitle>
-                <DialogContent>
-                    {/* ここに「新規リストに追加」「既存リストに追加」のUIを後で作る */}
-                    機能はこれから実装します。
+                <DialogContent sx={{ mt: 2 }}>
+
+                    {/* 新規リスト作成 */}
+                    <Stack spacing={2} sx={{ mb: 4 }}>
+                        <Typography variant="subtitle1">新規リストを作成</Typography>
+                        <TextField
+                            label="リスト名"
+                            fullWidth
+                            value={newListName}
+                            onChange={(e) => setNewListName(e.target.value)}
+                        />
+                        <Button
+                            variant="contained"
+                            onClick={handleCreateList}
+                            disabled={!newListName}
+                        >
+                            作成して追加
+                        </Button>
+                    </Stack>
+
+                    {/* 既存リストに追加 */}
+                    <Stack spacing={2}>
+                        <Typography variant="subtitle1">既存リストに追加</Typography>
+
+                        <FormControl fullWidth>
+                            <InputLabel>リストを選択</InputLabel>
+                            <Select
+                                value={selectedListId}
+                                label="リストを選択"
+                                onChange={(e) => setSelectedListId(Number(e.target.value))}
+                            >
+                                {lists.map((list) => (
+                                    <MenuItem key={list.id} value={list.id}>
+                                        {list.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+
+                        <Button
+                            variant="contained"
+                            onClick={handleAddToExistingList}
+                            disabled={!selectedListId}
+                        >
+                            追加
+                        </Button>
+                    </Stack>
+
                 </DialogContent>
+
                 <DialogActions>
                     <Button onClick={() => setOpenListDialog(false)}>閉じる</Button>
                 </DialogActions>

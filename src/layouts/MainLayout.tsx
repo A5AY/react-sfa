@@ -28,7 +28,7 @@ export default function MainLayout() {
 
   const menuItems = [
     { label: "顧客一覧", icon: <People />, path: "/" },
-    { label: "顧客リスト（未実装）", icon: <ListAlt />, path: "/list" },
+    { label: "顧客リスト", icon: <ListAlt />, path: "/lists" },
     { label: "活動履歴一覧（未実装）", icon: <History />, path: "/activities" },
     { label: "契約一覧（未実装）", icon: <Description />, path: "/contracts" },
     { label: "Yahoo天気予報（未実装）", icon: <Assessment />, path: "/weather" },
